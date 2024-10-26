@@ -16,7 +16,7 @@ def init_vectordb(embeddings_function):
     return db
 
 
-def add_documents_to_vectordb(documents, db):
+def add_documents_to_vectordb(documents, db: Chroma):
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=100)
     split_docs = text_splitter.split_documents(documents)
     db.add_documents(split_docs)
