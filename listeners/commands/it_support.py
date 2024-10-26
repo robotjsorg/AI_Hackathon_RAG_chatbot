@@ -1,6 +1,5 @@
 from slack_bolt import Ack, Respond
 from logging import Logger
-import ollama
 import random
 
 # Replace with your actual channel ID
@@ -13,14 +12,15 @@ LLM_CONTEXT_TEMPLATE = "" # TODO feed llm context from RAG here
 VALIDATION_PROMPT_TEMPLATE = (
     "Given the general IT knowledge and this context {context}\n"
     "\n"
-    "I'll ask you a question. If it's not related to IT, please reply with 'Sorry, I can only answer IT questions'. "
-    "Otherwise, reply with 'I can help'. "
     "Here is the question: {prompt}. "
+    "If the question is not related to IT, please reply with 'Sorry, it is not an IT question'. "
+    "Otherwise, reply with 'Yes, it is an IT question' and do not answer the question. "
 )
 
 SYSTEM_PROMPT = (
     "You are an IT support specialist with 20 years of experience working at one of the private tech company. Some of "
-    "the IT knowledge questions you will be asked is public knowledge or only available to internal of your company")
+    "the IT knowledge questions you will be asked is public knowledge or only available to internal of your company"
+)
 
 # PROMPT_TEMPLATE = (
 #     "You are an IT support. Given the general IT knowledge and this context {context}\n"
@@ -33,7 +33,8 @@ SYSTEM_PROMPT = (
 # )
 
 QUERY_PROMPT_TEMPLATE = (
-    "Please give me a concise paragraph answer to my question."
+    "Please give me a concise paragraph answer to my question if you know the answer. "
+    "Otherwise, if you don't know or can't help, only reply with 'IDK, I will contact IT Specialist' and do not say anyting else. \n"
 )
 
 def get_it_specialist_id():
@@ -43,6 +44,7 @@ def get_it_specialist_id():
     return it_specialist_id
 
 def generate_llm_response(prompt):
+    import ollama
     response = ollama.chat(model='llama3.2', messages=[
         {
             'role': 'user',
@@ -69,37 +71,61 @@ def generate_llm_response(prompt):
 #         messages.append({'role': 'user', 'content': user_input})
 
 # Out of scope
+def build_prompt(messages):
+    prompt = ''
+    for message in messages:
+        if message['role'] == 'system':
+            prompt += f"{message['content']}\n\n"
+        elif message['role'] == 'user':
+            prompt += f"User: {message['content']}\n\n"
+        elif message['role'] == 'assistant':
+            prompt += f"Assistant: {message['content']}\n\n"
+    return prompt
+
 def converse_with_ollama(initial_question, model='llama3.2'):
-    while True:
-        # Send the messages to Ollama
-        messages = [{'role': 'system', 'content': SYSTEM_PROMPT}]
-        llm_context = LLM_CONTEXT_TEMPLATE
-        validation_prompt = VALIDATION_PROMPT_TEMPLATE.format(
-            context=llm_context,
-            prompt=initial_question
-        )
-        messages.append({'role': 'user', 'content': validation_prompt})
-        # Validate IT question via first prompt
-        validation_response = generate_llm_response(messages)
+    messages = []
+    messages.append({'role': 'system', 'content': SYSTEM_PROMPT})
+    llm_context = LLM_CONTEXT_TEMPLATE
 
-        print(f"Validation response: {validation_response}")
-        messages.append({'role': 'assistant', 'content': validation_response})
-        if "I can help" in validation_response: # is an it question
-            query_prompt = QUERY_PROMPT_TEMPLATE
-            messages.append({'role': 'user', 'content': query_prompt})
+    # Build validation prompt
+    validation_prompt = VALIDATION_PROMPT_TEMPLATE.format(
+        context=llm_context,
+        prompt=initial_question
+    )
+    messages.append({'role': 'user', 'content': validation_prompt})
 
-            # Return the answer
-            query_response = generate_llm_response(messages)
+    # Build prompt string for validation
+    prompt = build_prompt(messages)
 
-            if 'IDK' in query_response.lower(): # When the bot can't answer the question
-                it_specialist_id = get_it_specialist_id()
-                query_response += f"\n<@{it_specialist_id}>, can you answer this?"
-        else: # Not IT question
-            query_response = "Sorry, I can only answer IT questions"
+    # Validate IT question via first prompt
+    validation_response = generate_llm_response(prompt)
+    print(f"Validation response: {validation_response}")
 
-        assistant_reply = query_response
-        print(f"Assistant: {assistant_reply}\n")
-        return assistant_reply
+    messages.append({'role': 'assistant', 'content': validation_response})
+
+    if "yes" in validation_response.lower():
+        # User repeats the initial question for the assistant to answer
+        messages.append({'role': 'user', 'content': initial_question})
+
+        # Build prompt string for query
+        query_prompt = build_prompt(messages)
+        print(f"query_prompt: {query_prompt}")
+        # Get the assistant's answer
+        query_response = generate_llm_response(query_prompt)
+        print(f"query_response: {query_response}")
+        if 'idk' or 'sorry' in query_response.lower():
+            if 'idk' in query_response.lower():
+                print(f"{query_response} contain 'idk")
+            if 'sorry' in query_response.lower():
+                print(f"{query_response} contain 'sorry")
+            it_specialist_id = get_it_specialist_id()
+            query_response += f"\n<@{it_specialist_id}>, can you answer this?"
+    else:
+        query_response = validation_response
+
+    assistant_reply = query_response
+    print(f"Assistant: {assistant_reply}\n")
+    return assistant_reply
 
 def it_support_callback(command, ack: Ack, respond: Respond, logger: Logger):
     try:
