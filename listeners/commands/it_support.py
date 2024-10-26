@@ -1,9 +1,12 @@
 from slack_bolt import Ack, Respond
 from logging import Logger
 import ollama
+# TODO: Import local RAG server
 
 # Replace with your actual channel ID
 IT_SUPPORT_CHANNEL_ID = "C07TFNLM4LW"
+
+# TODO: Get RAG output and feed into PROMPT TEMPLATE
 PROMPT_TEMPLATE = ("You are an IT support. I'll ask you a question. If it's related to IT, please give me a concise paragraph answer."
                    "Otherwise, just reply with 'I can only answer IT questions \n"
                    "{prompt}")
@@ -36,6 +39,7 @@ def generate_llm_response(prompt):
 #             break
 #         messages.append({'role': 'user', 'content': user_input})
 
+# TODO: Prompt message to IT person, timeout after 30s, then retrieve response from ollama
 def it_support_callback(command, ack: Ack, respond: Respond, logger: Logger):
     try:
         ack()
