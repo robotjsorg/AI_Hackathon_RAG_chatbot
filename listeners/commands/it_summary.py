@@ -34,7 +34,7 @@ def it_support_summary(command, ack: Ack, respond: Respond, logger: Logger):
         ]
 
         # Print table
-        table_data = tabulate(data, headers, tablefmt="pretty")
+        table_data = tabulate(data, headers, tablefmt="github")
 
         respond(
             response_type="in_channel",
