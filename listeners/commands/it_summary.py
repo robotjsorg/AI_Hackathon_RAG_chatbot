@@ -1,5 +1,6 @@
 from slack_bolt import Ack, Respond
 from logging import Logger
+from tabulate import tabulate
 
 
 def it_support_summary(command, ack: Ack, respond: Respond, logger: Logger):
@@ -7,17 +8,8 @@ def it_support_summary(command, ack: Ack, respond: Respond, logger: Logger):
         ack()
         user_id = command["user_id"]
 
-        # Define your table data
-        table_data = [
-            [
-                "Total questions resolved",
-                "Total likes",
-                "Total dislikes",
-                "Average response time",
-                "Satisfaction rate",
-                "Resolved percentage",
-                "Date",
-            ],
+        # Data
+        data = [
             [123, 98, 5, 15.2, 94.3, 98.7, "2024-10-16"],
             [87, 75, 3, 12.4, 95.8, 97.1, "2024-10-15"],
             [150, 130, 10, 14.8, 92.0, 99.3, "2024-10-14"],
@@ -29,6 +21,20 @@ def it_support_summary(command, ack: Ack, respond: Respond, logger: Logger):
             [180, 170, 9, 12.8, 95.0, 98.4, "2024-10-08"],
             [160, 150, 5, 14.2, 96.3, 98.6, "2024-10-07"],
         ]
+
+        # Headers
+        headers = [
+            "Total questions resolved",
+            "Total likes",
+            "Total dislikes",
+            "Average response time",
+            "Satisfaction rate",
+            "Resolved percentage",
+            "Date",
+        ]
+
+        # Print table
+        table_data = tabulate(data, headers, tablefmt="pretty")
 
         respond(
             response_type="in_channel",
