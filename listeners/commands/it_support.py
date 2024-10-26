@@ -1,6 +1,7 @@
 from slack_bolt import Ack, Respond
 from logging import Logger
 import random
+import requests
 
 # Replace with your actual channel ID
 IT_SUPPORT_CHANNEL_ID = "C07TFNLM4LW"
@@ -82,6 +83,27 @@ def build_prompt(messages):
             prompt += f"Assistant: {message['content']}\n\n"
     return prompt
 
+
+def call_rag(query):
+    url = 'http://10.104.150.19:5001/retrieve'
+    headers = {'Content-Type': 'application/json'}
+    data = {"query": query}
+
+    try:
+        response = requests.post(url, headers=headers, json=data)
+        response.raise_for_status()  # Check if the request was successful
+
+        # Print the response (assuming it's JSON)
+        print("Response JSON:", response.json())
+    except requests.exceptions.HTTPError as errh:
+        print("HTTP Error:", errh)
+    except requests.exceptions.ConnectionError as errc:
+        print("Connection Error:", errc)
+    except requests.exceptions.Timeout as errt:
+        print("Timeout Error:", errt)
+    except requests.exceptions.RequestException as err:
+        print("An error occurred:", err)
+
 def converse_with_ollama(initial_question, model='llama3.2'):
     messages = []
     messages.append({'role': 'system', 'content': SYSTEM_PROMPT})
@@ -113,11 +135,8 @@ def converse_with_ollama(initial_question, model='llama3.2'):
         # Get the assistant's answer
         query_response = generate_llm_response(query_prompt)
         print(f"query_response: {query_response}")
-        if 'idk' or 'sorry' in query_response.lower():
-            if 'idk' in query_response.lower():
-                print(f"{query_response} contain 'idk")
-            if 'sorry' in query_response.lower():
-                print(f"{query_response} contain 'sorry")
+        if 'idk' in query_response.lower() or 'sorry' in query_response.lower() or "can't" in query_response.lower():
+            print("Choosing a specialist")
             it_specialist_id = get_it_specialist_id()
             query_response += f"\n<@{it_specialist_id}>, can you answer this?"
     else:
