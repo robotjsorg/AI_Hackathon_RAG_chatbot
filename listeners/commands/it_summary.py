@@ -2,7 +2,7 @@ from slack_bolt import Ack, Respond
 from logging import Logger
 
 
-def it_summary(command, ack: Ack, respond: Respond, logger: Logger):
+def it_support_summary(command, ack: Ack, respond: Respond, logger: Logger):
     try:
         ack()
         user_id = command["user_id"]
