@@ -14,7 +14,7 @@ VALIDATION_PROMPT_TEMPLATE = (
     "Given the general IT knowledge and this context {context}\n"
     "\n"
     "Here is the question: {prompt}. "
-    "If the question is not related to IT, please reply with 'Sorry, it is not an IT question'. "
+    "If the question is not related to IT, please reply with 'No, it is not an IT question'. "
     "Otherwise, reply with 'Yes, it is an IT question' and do not answer the question. "
 )
 
@@ -34,8 +34,10 @@ SYSTEM_PROMPT = (
 # )
 
 QUERY_PROMPT_TEMPLATE = (
+    "Given this additional context {context} my question {prompt}"
     "Please give me a concise paragraph answer to my question if you know the answer. "
-    "Otherwise, if you don't know or can't help, only reply with 'IDK, I will contact IT Specialist' and do not say anyting else. \n"
+    "Otherwise, if you don't know or can't help, only reply with 'IDK, I will contact IT Specialist' "
+    "and please do not say anyting else. \n"
 )
 
 def get_it_specialist_id():
@@ -107,7 +109,9 @@ def call_rag(query):
 def converse_with_ollama(initial_question, model='llama3.2'):
     messages = []
     messages.append({'role': 'system', 'content': SYSTEM_PROMPT})
+    # llm_context = call_rag(initial_question)
     llm_context = LLM_CONTEXT_TEMPLATE
+    print(f"llm_context: {llm_context}")
 
     # Build validation prompt
     validation_prompt = VALIDATION_PROMPT_TEMPLATE.format(
@@ -127,7 +131,11 @@ def converse_with_ollama(initial_question, model='llama3.2'):
 
     if "yes" in validation_response.lower():
         # User repeats the initial question for the assistant to answer
-        messages.append({'role': 'user', 'content': initial_question})
+        user_prompt = QUERY_PROMPT_TEMPLATE.format(
+            context=llm_context,
+            prompt=initial_question
+        )
+        messages.append({'role': 'user', 'content': user_prompt})
 
         # Build prompt string for query
         query_prompt = build_prompt(messages)
