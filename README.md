@@ -9,9 +9,9 @@ pip install -r server/requirements.txt
 ```
 
 
-## Server
+## RAG Server
 
-To run the server, run the following command:
+To run the RAG server, run the following command:
 ```
 OPEN_AI_KEY=<Put OpenAI Key Here> python server/app.py
 ```
