@@ -1,7 +1,7 @@
 import os
 from flask import Flask, request, jsonify
 
-from utils import init_vectordb, add_documents_to_vectordb
+from utils import init_vectordb, add_documents_to_vectordb, query_documents_from_vectordb
 import chromadb.utils.embedding_functions as embedding_functions
 
 from dotenv import load_dotenv
@@ -35,8 +35,10 @@ def add_documents():
 @app.route('/retrieve', methods=['POST'])
 def retrieve_documents():
     data = request.json
-    context = retrieve_documents_from_vectordb(data, rag_db)
+    query = data.get("query")
+    context = query_documents_from_vectordb(query, rag_db)
     return context
+
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')
