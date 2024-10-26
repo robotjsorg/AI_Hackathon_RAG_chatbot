@@ -44,6 +44,7 @@ python app.py
 - **Method:** POST
 - **Description:** Query the vector database to retrieve relevant documents.
 - **Request Body:** JSON object containing the query.
+  - `query`: The query string to search for in the documents.
 - **Response:** JSON object with retrieved context.
 
 ## Implementation Details
