@@ -1,0 +1,37 @@
+Network Access Regulations
+1. VPN Usage
+Mandatory VPN for Remote Access: All remote access to the company's internal network must be conducted through the company's VPN. Direct access to internal systems without VPN usage is strictly prohibited.
+VPN Client Security: VPN clients must be kept up to date with the latest security patches. Employees are responsible for ensuring their VPN software is updated regularly.
+Encryption Standards: VPN connections must use strong encryption protocols (e.g., AES-256) to secure data transmission between the remote user and the company network.
+2. Cloud Access
+Approved Cloud Services: Employees may only use cloud services that have been approved by the IT department. Use of unapproved cloud services for storing or processing company data is prohibited.
+Access Control for Cloud Services: Access to cloud resources must be controlled using robust authentication mechanisms, such as single sign-on (SSO) and multi-factor authentication (MFA).
+Data Encryption: All sensitive data stored in cloud services must be encrypted at rest and in transit. Encryption keys should be managed securely, following best practices for key management.
+3. Remote Desktop and Application Access
+Secure Remote Desktop Protocol (RDP): Remote desktop access must be secured using VPN and MFA. Open RDP ports directly accessible from the internet are prohibited.
+Application Whitelisting: Only approved applications may be accessed remotely. The IT department maintains a whitelist of applications that can be securely accessed via remote desktop or application virtualization platforms.
+Session Timeout: Remote desktop and application sessions must automatically log out after a period of inactivity to prevent unauthorized access.
+4. Network Segmentation and Isolation
+Internal Network Segmentation: Critical systems and sensitive data must be isolated from the general network using segmentation techniques such as VLANs and firewalls. Access between segments should be tightly controlled and monitored.
+Guest Network: A separate guest network must be provided for non-employees and temporary visitors. This network must be isolated from the internal corporate network to prevent unauthorized access to company resources.
+IoT and BYOD Isolation: Internet of Things (IoT) devices and Bring Your Own Device (BYOD) systems must be placed on isolated networks with limited access to essential resources only.
+5. Identity and Access Management (IAM)
+Strong Authentication Methods: All network access, including cloud services, VPN, and remote desktops, must use strong authentication methods such as MFA and biometrics.
+Periodic Credential Review: User credentials and access rights must be reviewed periodically to ensure they are still necessary and appropriate for the user's role.
+Deprovisioning: When employees leave the company or change roles, their access to networks and cloud services must be promptly revoked or adjusted to reflect their new role.
+6. Monitoring and Logging
+Activity Logging: All access to company networks, VPNs, and cloud services must be logged. Logs should include details such as the user, time of access, and resources accessed.
+Security Information and Event Management (SIEM): Implement a SIEM solution to aggregate and analyze logs from various sources, providing real-time alerting and historical analysis of security events.
+Regular Audits: Conduct regular audits of access logs and network activity to identify and address any unauthorized access or suspicious behavior.
+7. Data Transfer and Sharing
+Secure File Transfer: All file transfers between company systems and external parties must use secure protocols such as SFTP or HTTPS. Use of insecure protocols (e.g., FTP) is prohibited.
+Data Sharing Policies: Establish clear policies for sharing data with third parties. Sensitive data must be shared only when absolutely necessary and with appropriate security measures in place.
+Data Residency Requirements: Ensure compliance with data residency requirements, storing data in regions or countries as mandated by regulatory or contractual obligations.
+8. Endpoint Security
+Endpoint Protection: All endpoints accessing the company network must have up-to-date antivirus, antimalware, and endpoint protection software installed and active.
+Device Compliance Checks: Devices must pass compliance checks for security configurations (e.g., encryption, patch level, endpoint protection) before being allowed to connect to the network or cloud services.
+Mobile Device Management (MDM): Implement MDM solutions to enforce security policies on mobile devices, including remote wipe capabilities for lost or stolen devices.
+9. Security Awareness and Training
+Access Security Training: Provide regular training for employees on best practices for secure network access, including VPN usage, cloud service access, and recognizing phishing attempts.
+Policy Acknowledgment: Employees must acknowledge understanding and acceptance of network access policies annually as part of their security training program.
+Phishing Simulations: Conduct regular phishing simulations to test and improve employee awareness of phishing risks and appropriate responses.
