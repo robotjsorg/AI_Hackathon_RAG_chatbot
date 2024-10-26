@@ -7,7 +7,7 @@ import random
 IT_SUPPORT_CHANNEL_ID = "C07TFNLM4LW"
 IT_SUPPORT_SPECIALISTS = {
     "D07TN6R3KLJ": "Max Tran",
-    "D07TQMKFAEQ": "Le Pham",
+    "D07TQMKFAEQ": "Duc Pham",
     "D07TN44FWSF": "Joe McMahon",
     "D07TQMKE52Q": "Anthea Z"
 }
