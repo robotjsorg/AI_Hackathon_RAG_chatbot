@@ -29,6 +29,11 @@
               "command": "/it-support",
               "description": "Ask IT any question!",
               "should_escape": false
+          },
+          {
+              "command": "/it-summary",
+              "description": "Summary of AI slackbot performance!",
+              "should_escape": false
           }
       ]
   },
