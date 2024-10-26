@@ -4,7 +4,9 @@ import ollama
 
 # Replace with your actual channel ID
 IT_SUPPORT_CHANNEL_ID = "C07TFNLM4LW"
-PROMPT_TEMPLATE = "{prompt}. Just give me a concise paragraph summary"
+PROMPT_TEMPLATE = ("You are an IT support. I'll ask you a question. If it's related to IT, please give me a concise paragraph answer."
+                   "Otherwise, just reply with 'I can only answer IT questions \n"
+                   "{prompt}")
 
 def generate_llm_response(prompt):
     llm_prompt = PROMPT_TEMPLATE.format(prompt=prompt)
