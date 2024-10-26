@@ -25,20 +25,26 @@ def home():
 
 @app.route('/add_documents', methods=['POST'])
 def add_documents():
-    global doc_cnt
-    data = request.json
+    try:
+        global doc_cnt
+        data = request.json
+        message = data.get("message")
+        add_documents_to_vectordb(message, rag_db, doc_cnt=doc_cnt)
+        return "Documents added to vector database"
     
-    add_documents_to_vectordb(data, rag_db, doc_cnt=doc_cnt)
+    except Exception as e:
+        
+        return jsonify({"error": str(e)}), 500
     
-    return "Documents added to vector database"
 
 @app.route('/retrieve', methods=['POST'])
 def retrieve_documents():
     data = request.json
     query = data.get("query")
     context = query_documents_from_vectordb(query, rag_db)
+    
     return context
 
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0')
+    app.run(debug=True, host='0.0.0.0', port=5001)

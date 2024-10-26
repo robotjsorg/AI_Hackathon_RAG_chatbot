@@ -36,6 +36,7 @@ python app.py
 - **Method:** POST
 - **Description:** Add new documents to the vector database.
 - **Request Body:** JSON object containing documents to be added.
+  - `message`: The message to be added to the vector database. String.
 - **Response:** "Documents added to vector database"
 
 ### 3. Retrieve Documents
@@ -44,8 +45,8 @@ python app.py
 - **Method:** POST
 - **Description:** Query the vector database to retrieve relevant documents.
 - **Request Body:** JSON object containing the query.
-  - `query`: The query string to search for in the documents.
-- **Response:** JSON object with retrieved context.
+  - `query`: The query to search for in the documents. String.
+- **Response:** A list of strings, each representing a related document.
 
 ## Implementation Details
 

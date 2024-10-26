@@ -68,12 +68,13 @@ def add_documents_to_vectordb(documents, db, metadata=None, doc_cnt=0):
         # split_docs)
     db.add(
         documents=documents,
-        metadata=metadata,
-        ids=["id1", "id2", "id3", ...]
+        # metadata=metadata or {},
+        ids=[str(doc_cnt+i) for i in range(len(documents))]
     )
 
 
 def query_documents_from_vectordb(query, db, k=3):
+    
     docs = db.query(
         query_texts=[query],
         n_results=k,
@@ -81,4 +82,4 @@ def query_documents_from_vectordb(query, db, k=3):
         # where_document={"$contains":"search_string"}
     )
 
-    return docs
+    return docs['documents']
