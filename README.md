@@ -7,7 +7,7 @@ Install the dependencies for server:
 ```
 pip install -r server/requirements.txt
 ```
-In your `.env` file, you should include:
+In your `server/.env` file, you should include:
 ```
 OPEN_AI_KEY=<Put OpenAI Key Here>
 ALLOW_RESET=TRUE
