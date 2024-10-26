@@ -2,7 +2,7 @@ from slack_bolt import Ack, Respond
 from logging import Logger
 
 # Replace with your actual channel ID
-IT_SUPPORT_CHANNEL_ID = "C0123456789"
+IT_SUPPORT_CHANNEL_ID = "C07TFNLM4LW"
 
 def it_support_callback(command, ack: Ack, respond: Respond, logger: Logger):
     try:
