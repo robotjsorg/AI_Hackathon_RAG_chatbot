@@ -13,7 +13,7 @@ pip install -r server/requirements.txt
 
 To run the server, run the following command:
 ```
-python server/app.py
+OPEN_AI_KEY=<Put OpenAI Key Here> python server/app.py
 ```
 
 
