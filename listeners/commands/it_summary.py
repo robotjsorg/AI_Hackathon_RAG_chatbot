@@ -38,7 +38,7 @@ def it_support_summary(command, ack: Ack, respond: Respond, logger: Logger):
                     "type": "section",
                     "text": {
                         "type": "mrkdwn",
-                        "text": f"*<@{user_id}> requested IT dashboard*\n>",
+                        "text": f"*<@{user_id}> requested IT Support Summary*\n>",
                     },
                 },
                 # Divider
