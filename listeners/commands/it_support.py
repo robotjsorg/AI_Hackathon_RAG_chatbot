@@ -15,8 +15,9 @@ LLM_CONTEXT_TEMPLATE = "" # TODO feed llm context from RAG here
 PROMPT_TEMPLATE = (
     "You are an IT support. Given the general IT knowledge and this context {context}\n"
     "\n"
-    "I'll ask you a question. If it's related to IT, please give me a concise paragraph answer."
-    "Otherwise, just reply with 'IDK. I can only answer IT questions.'\n"
+    "I'll ask you a question. If it's not related to IT, please reply with 'I can only answer IT questions'."
+    "If it's related to IT, please give me a concise paragraph answer."
+    "If you can't answer the IT question, just reply with 'IDK the answer to this question'\n"
     "{prompt}"
 )
 
