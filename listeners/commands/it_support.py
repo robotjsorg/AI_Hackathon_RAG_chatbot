@@ -12,7 +12,7 @@ def generate_llm_response(prompt):
             'content': prompt,
         },
     ])
-    print(response['message']['content'])
+    return response['message']['content']
 
 # Out of scope
 # def converse_with_ollama(initial_question, model='llama3.2'):
@@ -63,6 +63,7 @@ def it_support_callback(command, ack: Ack, respond: Respond, logger: Logger):
             return
 
         ollama_output = generate_llm_response(user_input)
+        print(ollama_output)
         bot_message = (f"<@{user_id}> requested IT support: {user_input}\n"
                        f"{ollama_output}")
         respond(
