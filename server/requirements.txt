@@ -1,0 +1,8 @@
+flask
+langchain-openai
+langchain-chroma
+langchain-community
+langchain-text-splitters
+langchain-core
+langchain-community
+chromadb
