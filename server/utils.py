@@ -66,11 +66,14 @@ def add_documents_to_vectordb(documents, db, metadata=None, doc_cnt=0):
     # split_docs = text_splitter.split_documents(documents)
     # db.add_documents(
         # split_docs)
+    
     db.add(
-        documents=documents,
+        documents=[documents],
         # metadata=metadata or {},
-        ids=[str(doc_cnt+i) for i in range(len(documents))]
+        ids=["msg_"+str(doc_cnt+1)]
     )
+    
+    return doc_cnt+1
 
 
 def query_documents_from_vectordb(query, db, k=3):

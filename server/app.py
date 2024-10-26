@@ -30,6 +30,8 @@ def add_documents():
         data = request.json
         message = data.get("message")
         add_documents_to_vectordb(message, rag_db, doc_cnt=doc_cnt)
+        doc_cnt += 1
+        
         return "Documents added to vector database"
     
     except Exception as e:
