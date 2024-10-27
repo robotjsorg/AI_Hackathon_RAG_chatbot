@@ -34,10 +34,11 @@ SYSTEM_PROMPT = (
 # )
 
 QUERY_PROMPT_TEMPLATE = (
-    "Given this additional context {context} my question {prompt}"
-    "Please give me a concise paragraph answer to my question if you know the answer. "
-    "Otherwise, if you don't know or can't help, only reply with 'IDK, I will contact IT Specialist' "
-    "and please do not say anyting else. \n"
+    "Given my question {prompt}\n"
+    "You can look for the answer in publicly available IT knowledge and this additional internal knowledge {context}\n"
+    "Please give me a concise paragraph answer to my question if you can find the answer. "
+    "Otherwise, if you can't find or can't help or don't know, only reply with 'IDK, I will contact IT Specialist' "
+    "and please do not say anything else.\n"
 )
 
 def get_it_specialist_id():
@@ -87,7 +88,8 @@ def build_prompt(messages):
 
 
 def call_rag(query):
-    url = 'http://10.104.150.19:5001/retrieve'
+    print("Calling RAG")
+    url = 'http://10.104.150.13:5001/retrieve'
     headers = {'Content-Type': 'application/json'}
     data = {"query": query}
 
@@ -97,6 +99,7 @@ def call_rag(query):
 
         # Print the response (assuming it's JSON)
         print("Response JSON:", response.json())
+        return response.json()
     except requests.exceptions.HTTPError as errh:
         print("HTTP Error:", errh)
     except requests.exceptions.ConnectionError as errc:
@@ -107,10 +110,10 @@ def call_rag(query):
         print("An error occurred:", err)
 
 def converse_with_ollama(initial_question, model='llama3.2'):
-    messages = []
-    messages.append({'role': 'system', 'content': SYSTEM_PROMPT})
-    # llm_context = call_rag(initial_question)
-    llm_context = LLM_CONTEXT_TEMPLATE
+    root_messages = []
+    root_messages.append({'role': 'system', 'content': SYSTEM_PROMPT})
+    llm_context = call_rag(initial_question)
+    # llm_context = LLM_CONTEXT_TEMPLATE
     print(f"llm_context: {llm_context}")
 
     # Build validation prompt
@@ -118,16 +121,16 @@ def converse_with_ollama(initial_question, model='llama3.2'):
         context=llm_context,
         prompt=initial_question
     )
-    messages.append({'role': 'user', 'content': validation_prompt})
+    validation_messages = root_messages + [{'role': 'user', 'content': validation_prompt}]
 
     # Build prompt string for validation
-    prompt = build_prompt(messages)
+    prompt = build_prompt(validation_messages)
 
     # Validate IT question via first prompt
     validation_response = generate_llm_response(prompt)
     print(f"Validation response: {validation_response}")
 
-    messages.append({'role': 'assistant', 'content': validation_response})
+    validation_messages.append({'role': 'assistant', 'content': validation_response})
 
     if "yes" in validation_response.lower():
         # User repeats the initial question for the assistant to answer
@@ -135,10 +138,10 @@ def converse_with_ollama(initial_question, model='llama3.2'):
             context=llm_context,
             prompt=initial_question
         )
-        messages.append({'role': 'user', 'content': user_prompt})
-
+        query_messages = root_messages + [{'role': 'user', 'content': user_prompt}]
+        print(f"query_messages: {query_messages}")
         # Build prompt string for query
-        query_prompt = build_prompt(messages)
+        query_prompt = build_prompt(query_messages)
         print(f"query_prompt: {query_prompt}")
         # Get the assistant's answer
         query_response = generate_llm_response(query_prompt)
