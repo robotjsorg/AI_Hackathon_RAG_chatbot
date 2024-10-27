@@ -1,16 +1,40 @@
 import os
 from flask import Flask, request, jsonify
-
+import ollama
 from utils import init_vectordb, add_documents_to_vectordb, query_documents_from_vectordb
 import chromadb.utils.embedding_functions as embedding_functions
 
 from dotenv import load_dotenv
 
 load_dotenv()  # Load environment variables from .env file
-embed_fn = embedding_functions.OpenAIEmbeddingFunction(
-                api_key=os.getenv("OPENAI_API_KEY"),
-                model_name="text-embedding-3-small"
-            )
+
+# Define the custom embedding function
+class OllamaEmbeddingFunction(embedding_functions.EmbeddingFunction):
+    def __init__(self, model_name: str = 'llama3.2'):
+        self.model_name = model_name
+
+    def __call__(self, texts):
+        if isinstance(texts, str):
+            texts = [texts]
+
+        embeddings = []
+        for text in texts:
+            response = ollama.embed(model=self.model_name, input=text)
+            # Check if the response contains an embedding
+            if 'embedding' in response:
+                embedding = response['embedding']
+                embeddings.append(embedding)
+            else:
+                # Handle the case where embedding is not returned
+                embeddings.append([])  # Or handle appropriately
+        return embeddings
+
+embed_fn = OllamaEmbeddingFunction(model_name='llama3.2')
+
+# embed_fn = embedding_functions.OpenAIEmbeddingFunction(
+#                 api_key=os.getenv("OPENAI_API_KEY"),
+#                 model_name="text-embedding-3-small"
+#             )
 
 
 app = Flask(__name__)
